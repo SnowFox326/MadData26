@@ -13,6 +13,15 @@ body {
   overflow-x: hidden;
 }
 
+/* Import a clean UI font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+:root {
+  --bg-overlay: rgba(7,11,20,0.55);
+  --accent: #2563eb;
+  --muted: rgba(255,255,255,0.75);
+}
+
 /* Fix the z-index to be the absolute lowest possible */
 .background-gif {
   position: fixed;
@@ -33,6 +42,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 
 .card-glass {
@@ -46,17 +56,223 @@ body {
 }
 
 .btn-primary {
-  background-color: #2563eb;
+  background-color: var(--accent);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   border: none;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
   align-self: center;
 }
 
 .btn-primary:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px) scale(1.02);
   background-color: #1d4ed8;
+  box-shadow: 0 8px 24px rgba(37,99,235,0.12);
 }
+
+.btn-cta {
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(37,99,235,0.18);
+  animation: cta-pulse 3s infinite;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none;
+}
+
+@keyframes cta-pulse {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Dashboard dark background (no GIF) */
+.dashboard-bg {
+  background: linear-gradient(180deg, #0b0b0b 0%, #2b2b2b 100%);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* HERO LAYOUT */
+.hero {
+  padding: 6rem 2rem;
+}
+
+/* When `.hero` is used on the main content layer, align items to the top */
+.content-layer.hero {
+  /* center horizontally, align to top vertically */
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 10rem;
+}
+
+.hero-inner {
+  max-width: 900px;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.hero-title {
+  font-size: clamp(5rem, 5vw, 3.25rem);
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem 0;
+}
+
+.hero-sub {
+  color: rgba(255,255,255,0.85);
+  max-width: 54ch;
+  margin: 0 auto 1.25rem auto;
+  font-size: 1.05rem;
+}
+
+.hero-ctas { display: flex; justify-content: center; align-items: center; }
+
+.features {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 960px;
+}
+
+.feature {
+  background: rgba(255,255,255,0.04);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  color: rgba(255,255,255,0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 180px;
+}
+
+/* Subtle overlay to improve text contrast over animated background */
+.background-gif::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Dashboard grid layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "input preview"
+    "score grades";
+  gap: 5rem;
+  width: min(1600px, 95%);
+}
+
+.dashboard-grid section {
+  display: flex;
+  align-items: stretch;
+}
+
+.box-input { grid-area: input; }
+.box-preview { grid-area: preview; }
+.box-score { grid-area: score; }
+.box-grades { grid-area: grades; }
+
+.dashboard-grid .card-glass {
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.score-value {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "input"
+      "preview"
+      "score"
+      "grades";
+  }
+}
+
+/* Ensure the Back button sits above the grid boxes */
+.dashboard-back {
+  position: relative;
+  z-index: 20;
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: left;
+}
+
+/* Minimal dashboard styles */
+.dashboard-grid section { 
+  min-height: 160px;
+}
+
+.card-glass h3 {
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.course-input label {
+  display: block;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 0.5rem;
+}
+
+.course-input input[type="text"],
+.course-input input[type="time"],
+.course-input input[type="number"],
+.course-input select {
+  width: 75%;
+  padding: 0.45rem 1rem;
+  margin-top: 0.3rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #fff;
+  border-radius: 0.5rem;
+}
+
+.time-row { display: flex; gap: 0.75rem; }
+.time-row label { flex: 1; }
+
+.days-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.days-row .day { font-size: 0.95rem; color: rgba(255,255,255,0.9); }
+
+.box-preview .card-glass { max-height: 50vh; overflow: auto; }
+.box-preview ul li { padding: 0.5rem 0; }
+
+.box-score .card-glass { display: flex; align-items: center; justify-content: center; }
+.box-score .score-value { color: var(--accent); }
+
+@media (max-width: 880px) {
+  .time-row { flex-direction: column; }
+  .features { flex-direction: column; align-items: center; }
+}
+
