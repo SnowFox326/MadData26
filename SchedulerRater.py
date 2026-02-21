@@ -1,6 +1,10 @@
 import requests
+import os
+from dotenv import load_dotenv
 
-MAD_api_token = '92824791ff5248dabb8b25504e1de5c3' # DO NOT PUSH THIS TOKEN
+load_dotenv()
+
+MAD_api_token = os.getenv("MAD_API_TOKEN")
 headers = {"Authorization": f"Token token={MAD_api_token}"}
 
 def get_grade_data(course_name):
