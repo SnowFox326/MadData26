@@ -144,10 +144,11 @@ def create_graph(class_grades):
         values.append(class_grades.get(key))
     total = sum(values)
     for i in range(len(values)):
-        values[i] = values[i] / total
+        values[i] = (values[i] / total) * 100
     fig, ax = plt.subplots(figsize=(10,5))
     sns.despine(ax = ax)
-    ax.bar(categories, values)
+    bar_container = ax.bar(categories, values)
+    ax.bar_label(bar_container, fmt = '{:,.1f}%')
     plt.xlabel("Grades")
     plt.ylabel("Percentage of students")
     plt.show()
