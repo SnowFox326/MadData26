@@ -1,5 +1,9 @@
 import requests
 import os
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -131,15 +135,36 @@ def calculate_score(class_codes, credits):
     final_score = sum(difficulty) / sum(credits)
     return round(final_score)
 
+def create_graph(class_grades):
+    gpa_values = {'aCount': 'A', 'abCount': 'AB', 'bCount': 'B', 'bcCount': 'BC', 'cCount': 'C', 'dCount': 'D', 'fCount': 'F'}
+    categories = []
+    values = []
+    for key in gpa_values.keys():
+        categories.append(gpa_values[key])
+        values.append(class_grades.get(key))
+    total = sum(values)
+    for i in range(len(values)):
+        values[i] = values[i] / total
+    fig, ax = plt.subplots(figsize=(10,5))
+    sns.despine(ax = ax)
+    ax.bar(categories, values)
+    plt.xlabel("Grades")
+    plt.ylabel("Percentage of students")
+    plt.show()
+
+
 
 
 def run_program():
-    print(calculate_score(["CS 300", "CS 400", "STAT 240", "MATH 234"], [3, 3, 3, 3]))
+    #create_graph()
+    #print(calculate_score(["CS 300", "CS 400", "STAT 240", "MATH 234"], [3, 3, 3, 3]))
     class_code = input("Enter your class number: ")
     data = get_grade_data(class_code)
     grades_url = data['gradesUrl']
     #print(grades_url)
     grades_response = requests.get(grades_url, headers=headers).json()
+    create_graph(grades_response.get('cumulative', {}))
+
     #print(grades_response)
     print_cumulative_stats(grades_response)
     semester = semester_remove_upper[input("Enter a semester (ex: Spring 2024):").strip().upper()]
