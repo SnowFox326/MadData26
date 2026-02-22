@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -176,12 +180,15 @@ def create_graph(class_grades):
     return buf.read()
 
 def run_program():
-    print(calculate_score(["CS 300", "CS 400", "STAT 240", "MATH 234"], [3, 3, 3, 3]))
+    #create_graph()
+    print(calculate_score(["MATH 321"], [3]))
     class_code = input("Enter your class number: ")
     data = get_grade_data(class_code)
     grades_url = data['gradesUrl']
     #print(grades_url)
     grades_response = requests.get(grades_url, headers=headers).json()
+    #create_graph(grades_response.get('cumulative', {}))
+
     #print(grades_response)
     print_cumulative_stats(grades_response)
     semester = semester_remove_upper[input("Enter a semester (ex: Spring 2024):").strip().upper()]
