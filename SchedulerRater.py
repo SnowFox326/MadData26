@@ -1,5 +1,9 @@
 import requests
 import os
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -38,21 +42,28 @@ def get_grade_data(course_name):
 
 def get_average_gpa(class_grades):
     gpa_values = {'aCount': 4, 'abCount': 3.5, 'bCount': 3, 'bcCount': 2.5, 'cCount': 2, 'dCount': 1, 'fCount': 0}
-    sum = 0
+    total_weighted = 0.0
     total = 0
-    for key in gpa_values.keys():
-        sum += class_grades.get(key) * gpa_values[key]
-        total += class_grades.get(key)
-    return round(sum / total, 2)
+    for key, val in gpa_values.items():
+        count = class_grades.get(key, 0) or 0
+        total_weighted += count * val
+        total += count
+    if total == 0:
+        return 0.0
+    return round(total_weighted / total, 2)
 
 
 def get_stress_metrics(stats):
     total = stats['total']
-    if total == 0: return 0
-    
-    a_rate = (stats['aCount'] / total) * 100
-    fail_rate = ((stats['fCount'] + stats['dCount']) / total) * 100
-    
+    if not total:
+        return 0.0, 0.0
+
+    a_count = stats.get('aCount', 0) or 0
+    f_count = stats.get('fCount', 0) or 0
+    d_count = stats.get('dCount', 0) or 0
+    a_rate = (a_count / total) * 100
+    fail_rate = ((f_count + d_count) / total) * 100
+
     return round(a_rate, 2), round(fail_rate, 2)
 
 def print_cumulative_stats(grades_response):
@@ -112,26 +123,57 @@ def print_stats_by_semester(grades_response, semester_code):
                 '''
 
 def calculate_score(class_codes, credits):
-    if (len(credits) != len(class_codes)):
-        raise Exception("List sizes don't match")
+    if len(credits) != len(class_codes):
+        raise ValueError("List sizes don't match")
+
     difficulty = []
     for code in class_codes:
         data = get_grade_data(code)
-        grades_url = data['gradesUrl']
-        #print(grades_url)
+        if not data:
+            raise ValueError(f"No grade data found for course '{code}'")
+        grades_url = data.get('gradesUrl')
+        if not grades_url:
+            raise ValueError(f"No grades URL for course '{code}'")
         grades_response = requests.get(grades_url, headers=headers).json()
-        avg_gpa = get_average_gpa(grades_response.get('cumulative', {}))
-        #print(avg_gpa)
-        diff_score = 100 - (100 * avg_gpa / 4.0)
+        avg_gpa = get_average_gpa(grades_response.get('cumulative', {}) or {})
+        # middle point is 3.25
+        diff_score = 100 - (100 * (avg_gpa - 2.5) / 1.5)
         difficulty.append(diff_score)
-        #print(diff_score)
-    for i in range(len(difficulty)):
-        difficulty[i] *= credits[i]
-        #print(difficulty[i])
-    final_score = sum(difficulty) / sum(credits)
+
+    # weigh by credits
+    weighted = [difficulty[i] * (credits[i] or 0) for i in range(len(difficulty))]
+    total_credits = sum([c or 0 for c in credits])
+    if total_credits == 0:
+        raise ValueError("Total credits is zero")
+    final_score = sum(weighted) / 14 # total_credits -- 18 is the max credits for 1 semester
+    if (final_score > 100):
+        final_score = 100
     return round(final_score)
 
-
+def create_graph(class_grades):
+    # Create a matplotlib figure for the grade distribution and return PNG bytes
+    from io import BytesIO
+    gpa_values = {'aCount': 'A', 'abCount': 'AB', 'bCount': 'B', 'bcCount': 'BC', 'cCount': 'C', 'dCount': 'D', 'fCount': 'F'}
+    categories = []
+    values = []
+    for key in gpa_values.keys():
+        categories.append(gpa_values[key])
+        values.append((class_grades.get(key) or 0))
+    total = sum(values) or 1
+    pct_vals = [(v / total) * 100 for v in values]
+    fig, ax = plt.subplots(figsize=(8,4))
+    sns.despine(ax=ax)
+    bar_container = ax.bar(categories, pct_vals, color="darkblue")
+    ax.bar_label(bar_container, fmt='{:,.1f}%')
+    ax.set_xlabel("Grades")
+    ax.set_ylabel("Percentage of students")
+    ax.set_ylim(0, max(10, max(pct_vals) * 1.15))
+    buf = BytesIO()
+    fig.tight_layout()
+    fig.savefig(buf, format='png', dpi=100)
+    plt.close(fig)
+    buf.seek(0)
+    return buf.read()
 
 def run_program():
     print(calculate_score(["CS 300", "CS 400", "STAT 240", "MATH 234"], [3, 3, 3, 3]))
@@ -150,4 +192,5 @@ def run_program():
     professor = professor.strip().upper()
     print_stats_by_instructor(grades_response, professor)
 
-run_program()
+if __name__ == '__main__':
+    run_program()

@@ -175,18 +175,22 @@ body {
 /* Dashboard grid layout */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 2fr;
+  /* shorter top row so Course Input is shorter; preview will match */
+  grid-template-rows: 520px 1fr;
   grid-template-areas:
     "input preview"
     "score grades";
   gap: 5rem;
+  /* ensure items in the same row stretch to equal height */
+  align-items: stretch;
   width: min(1600px, 95%);
 }
 
 .dashboard-grid section {
   display: flex;
   align-items: stretch;
+  flex: 1 1 0%;
 }
 
 .box-input { grid-area: input; }
@@ -205,6 +209,33 @@ body {
 
 .score-value {
   color: #fff;
+}
+
+/* Score color tiers — use higher-specificity selectors so they override defaults */
+.box-score .score-value.score-low { color: #10B981; }       /* green */
+.box-score .score-value.score-low-mid { color: #60A5FA; }   /* blue */
+.box-score .score-value.score-mid { color: #FBBF24; }       /* yellow */
+.box-score .score-value.score-mid-high { color: #F59E0B; }  /* orange */
+.box-score .score-value.score-high { color: #EF4444; }      /* red */
+
+/* Flame icon shown for very high scores */
+.score-fire-fill {
+  /* animated fire gradient clipped into the text */
+  background: linear-gradient(90deg, #FFB347 0%, #FF6B4D 30%, #FF3D00 55%, #FFD54D 75%, #FF6B4D 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 18px rgba(255,107,77,0.18));
+  animation: fire-move 1500ms linear infinite;
+  text-shadow: 0 6px 18px rgba(255,107,77,0.08);
+}
+
+@keyframes fire-move {
+  0% { background-position: 0% 50%; transform: translateY(0); }
+  50% { background-position: 100% 50%; transform: translateY(-3px) scale(1.02); }
+  100% { background-position: 0% 50%; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
@@ -231,7 +262,7 @@ body {
 
 /* Minimal dashboard styles */
 .dashboard-grid section { 
-  min-height: 160px;
+  min-height: 180px;
 }
 
 .card-glass h3 {
@@ -243,7 +274,7 @@ body {
   display: block;
   font-size: 0.95rem;
   color: rgba(255,255,255,0.9);
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .course-input input[type="text"],
@@ -251,7 +282,7 @@ body {
 .course-input input[type="number"],
 .course-input select {
   width: 75%;
-  padding: 0.45rem 1rem;
+  padding: 0.5rem 1rem;
   margin-top: 0.3rem;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.06);
@@ -265,14 +296,58 @@ body {
 .days-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
 .days-row .day { font-size: 0.95rem; color: rgba(255,255,255,0.9); }
 
-.box-preview .card-glass { max-height: 50vh; overflow: auto; }
+.box-preview .card-glass { height: 100%; overflow: auto; }
 .box-preview ul li { padding: 0.5rem 0; }
 
 .box-score .card-glass { display: flex; align-items: center; justify-content: center; }
 .box-score .score-value { color: var(--accent); }
 
+/* Remove button */
+.btn-remove {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.9);
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.45rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.btn-remove:hover { background: rgba(255,255,255,0.03); }
+
+.course-list-item > div:first-child { margin-right: 0.75rem; }
+
 @media (max-width: 880px) {
   .time-row { flex-direction: column; }
   .features { flex-direction: column; align-items: center; }
+}
+
+/* Schedule preview styles */
+.schedule-wrapper { display: flex; gap: 0.5rem; align-items: stretch; }
+.schedule-hours { width: 48px; color: rgba(255,255,255,0.7); font-size: 0.8rem; display:flex; flex-direction:column; }
+.schedule-hours .hour { height: calc((100% - 0px) / 15); display:flex; align-items:flex-start; padding-top:2px; }
+.schedule-grid { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.day-column { border-left: 1px solid rgba(255,255,255,0.04); position: relative; min-height: 420px; }
+.day-label { position: absolute; top: 4px; left: 6px; font-size: 0.9rem; color: rgba(255,255,255,0.85); }
+.day-body { position: relative; height: 100%; padding-top: 28px; }
+.course-block {
+  position: absolute;
+  left: 4px;
+  right: 0.5px;
+  background: linear-gradient(180deg, rgba(37,99,235,0.95), rgba(59,130,246,0.9));
+  color: white;
+  padding: 8px 4px;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  font-size: 0.75rem;
+  overflow: hidden;
+  width: calc(100% - 8px);
+}
+.block-title { font-weight: 700; }
+.block-meta { font-size: 0.75rem; opacity: 0.9; }
+
+@media (max-width: 880px) {
+  .schedule-wrapper { flex-direction: column; }
+  .schedule-hours { display: none; }
+  .day-column { min-height: 300px; }
 }
 
