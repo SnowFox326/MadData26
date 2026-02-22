@@ -17,18 +17,30 @@ const formatDateISO = (d) => {
 }
 
 function getColorForRatio(r) {
-  // r in [0,1] -> interpolate from pale yellow to orange/red
+  // r in [0,1] -> interpolate from pale -> mid (yellow) -> end (red)
   const start = [255, 247, 205] // pale
-  const mid = [255, 183, 77]
+  const mid = [255, 223, 70]
   const end = [255, 61, 0]
   const p = Math.min(1, Math.max(0, r))
-  const a = p < 0.5 ? p * 2 : 1
-  const mix = p < 0.5 ? mid : end
-  const t = p < 0.5 ? p * 2 : (p - 0.5) * 2
-  const rVal = Math.round(start[0] + (mix[0] - start[0]) * (p < 0.5 ? t : 1))
-  const gVal = Math.round(start[1] + (mix[1] - start[1]) * (p < 0.5 ? t : 1))
-  const bVal = Math.round(start[2] + (mix[2] - start[2]) * (p < 0.5 ? t : 1))
-  return `rgb(${rVal}, ${gVal}, ${bVal})`
+  const lerp = (a, b, t) => Math.round(a + (b - a) * t)
+
+  if (p <= 0) return `rgb(${start[0]}, ${start[1]}, ${start[2]})`
+  if (p >= 1) return `rgb(${end[0]}, ${end[1]}, ${end[2]})`
+
+  if (p <= 0.5) {
+    const t = p / 0.5 // 0..1 between start->mid
+    const rVal = lerp(start[0], mid[0], t)
+    const gVal = lerp(start[1], mid[1], t)
+    const bVal = lerp(start[2], mid[2], t)
+    return `rgb(${rVal}, ${gVal}, ${bVal})`
+  }
+
+  // p > 0.5: interpolate mid->end
+  const t2 = (p - 0.5) / 0.5
+  const rVal2 = lerp(mid[0], end[0], t2)
+  const gVal2 = lerp(mid[1], end[1], t2)
+  const bVal2 = lerp(mid[2], end[2], t2)
+  return `rgb(${rVal2}, ${gVal2}, ${bVal2})`
 }
 
 export default function Heatmap() {

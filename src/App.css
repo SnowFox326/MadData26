@@ -317,7 +317,6 @@ body {
 .muted-day { opacity: 0.18 }
 .assign-list { max-height:120px; overflow:auto; font-size:0.9rem; color: rgba(255,255,255,0.9); }
 
-
 /* Remove button */
 .btn-remove {
   background: transparent;

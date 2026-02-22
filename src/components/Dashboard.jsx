@@ -120,7 +120,7 @@ export default function Dashboard({ onBack }) {
 
           <section className="box-score">
             <div className="card-glass">
-              <h3 className="text-xl font-semibold mb-2" style = {{ fontSize: '3rem'}}>Overall Score</h3>
+              <h3 className="text-xl font-semibold mb-2" style = {{ fontSize: '2rem'}}>Screwed Score</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
                 <div className={`score-value ${getScoreClass(overallScore)} ${isHighScore ? 'score-fire-fill' : ''}`} style={{ fontSize: '2.25rem', fontWeight: '800', display: 'inline-flex', alignItems: 'center' }}>
                   {scoreLoading ? '...' : (overallScore !== null ? overallScore : '—')}
