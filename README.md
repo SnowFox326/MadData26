@@ -41,6 +41,7 @@ Burnout Bound helps students visualize their schedules and assignments during th
 - Used pandas, numpy, matplotlib, and seaborn for server-side graph generation
 - Runs in a Python virtual environment
 - The heatmap and schedule preview are client-side components, and assignment data is stored locally
+- We used GitHub Copilot in VSCode to help generate framework code and stylesheets recommendations
 ### Frontend
 - React (JSX) + Vite
 - Used Tailwind and custom CSS styles
