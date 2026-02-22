@@ -1,5 +1,8 @@
 ### MadData 2026
 ### Names: Dylan Dorschner, Neil Fitzsimons
+
+![image](/src/assets/BurnoutBoundHomePage.jpeg)
+
 # Burnout Bound
 
 ## 1. Overview
