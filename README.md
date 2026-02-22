@@ -32,6 +32,27 @@ Burnout Bound helps students visualize their schedules and assignments during th
 - Color gradient highlights difficult points on the schedule with red being very stressful and tan being calm
 
 ## Tech Stack
+### Backend
+- Flask API to locally run our server
+- Used Madgrades API to retrieve grade distribution data
+- Used pandas, numpy, matplotlib, and seaborn for server-side graph generation
+- Runs in a Python virtual environment
+- The heatmap and schedule preview are client-side components, and assignment data is stored locally
+### Frontend
+- React (JSX) + Vite
+- Used Tailwind and custom CSS styles
+- Ran locally using npm/Node as a Vite dev server
+
+## Important Use Commands
+### Frontend
+- npm run dev
+### Backend
+- python -m venv .venv
+- .venv\Scripts\activate
+- source .venv/bin/activate
+- pip install -r requirements.txt
+- python server.py
+- deactivate
 
 ## Our Inspiration
 - We realized that class enrollment is a very stressful time of the semester, and students often enroll without taking into account class balance and mental health consequences
@@ -45,3 +66,4 @@ Burnout Bound helps students visualize their schedules and assignments during th
 - We want to include more graph customization like distribution graphs for specific instructors or certain semesters
 - We could refine our function to calculate our ***Screwed Score*** to include professor ratings, degree requirements, how spread out classes are, and traveling distances between classes
 - We also want to add something to help with stress during the semester like a time management system through our app
+- Since the app is being hosted locally right now, we want to fully launch it as a web app to everyone in the future

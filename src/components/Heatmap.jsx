@@ -19,8 +19,8 @@ const formatDateISO = (d) => {
 function getColorForRatio(r) {
   // r in [0,1] -> interpolate from pale -> mid (yellow) -> end (red)
   const start = [255, 247, 205] // pale
-  const mid = [255, 223, 70]
-  const end = [255, 61, 0]
+  const mid = [255, 223, 70] // yellow
+  const end = [255, 61, 0] // red
   const p = Math.min(1, Math.max(0, r))
   const lerp = (a, b, t) => Math.round(a + (b - a) * t)
 
