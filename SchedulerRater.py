@@ -126,7 +126,7 @@ def calculate_score(class_codes, credits):
         grades_response = requests.get(grades_url, headers=headers).json()
         avg_gpa = get_average_gpa(grades_response.get('cumulative', {}))
         #print(avg_gpa)
-        diff_score = 100 - (100 * avg_gpa / 4.0)
+        diff_score = 100 - (100 * (avg_gpa - 2.5) / 1.5)
         difficulty.append(diff_score)
         #print(diff_score)
     for i in range(len(difficulty)):
@@ -151,20 +151,21 @@ def create_graph(class_grades):
     ax.bar_label(bar_container, fmt = '{:,.1f}%')
     plt.xlabel("Grades")
     plt.ylabel("Percentage of students")
-    plt.show()
+    #plt.show()
+    return fig, ax
 
 
 
 
 def run_program():
     #create_graph()
-    #print(calculate_score(["CS 300", "CS 400", "STAT 240", "MATH 234"], [3, 3, 3, 3]))
+    print(calculate_score(["MATH 321"], [3]))
     class_code = input("Enter your class number: ")
     data = get_grade_data(class_code)
     grades_url = data['gradesUrl']
     #print(grades_url)
     grades_response = requests.get(grades_url, headers=headers).json()
-    create_graph(grades_response.get('cumulative', {}))
+    #create_graph(grades_response.get('cumulative', {}))
 
     #print(grades_response)
     print_cumulative_stats(grades_response)
