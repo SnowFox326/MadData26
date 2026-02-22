@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import CourseInput from './CourseInput'
 import SchedulePreview from './SchedulePreview'
+import Heatmap from './Heatmap'
 
 export default function Dashboard({ onBack }) {
   const [courses, setCourses] = useState([])
@@ -151,6 +152,13 @@ export default function Dashboard({ onBack }) {
                   </div>
                 </div>
               )}
+            </div>
+          </section>
+
+          <section className="box-heat">
+            <div className="card-glass">
+              <h3 className="text-xl font-semibold mb-2">Assignment Heatmap</h3>
+              <Heatmap />
             </div>
           </section>
         </div>
